@@ -20,8 +20,7 @@ type MemFS struct {
 	opened map[int]*File
 }
 
-// NewMemFs -
-// todo: parse from file | mount
+// NewMemFs - init new in-memory filesystem
 func NewMemFs() *MemFS {
 	root := CreateFile("/")
 
@@ -31,7 +30,7 @@ func NewMemFs() *MemFS {
 	}
 }
 
-// Filestat by file name
+// Filestat by file file id
 func (m *MemFS) Filestat(id int) {
 	uid := uint64(id)
 
@@ -84,7 +83,7 @@ func (m *MemFS) Create(name string) *File {
 	return file
 }
 
-// Open -
+// Open file
 func (m *MemFS) Open(name string) (int, error) {
 	file, err := m.open(name)
 	if err != nil {

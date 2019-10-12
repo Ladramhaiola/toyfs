@@ -22,5 +22,3 @@ var (
 func main() {
 	Run()
 }
-
-// todo: cli, Link Unlink
