@@ -1,0 +1,100 @@
+{
+	"blocksize": 10,
+	"descriptors": 10,
+	"linkcount": 6,
+	"volumes": {
+		"/": {
+			"blocks": 0,
+			"data": "",
+			"dir": true,
+			"id": 0,
+			"linked": "",
+			"links": null,
+			"memdir": [
+				"etc",
+				"even",
+				"odd",
+				"somedata"
+			],
+			"modtime": "2019-10-13T00:04:56.958787567+03:00",
+			"name": "/",
+			"size": 0
+		},
+		"etc": {
+			"blocks": 0,
+			"data": "",
+			"dir": true,
+			"id": 4,
+			"linked": "",
+			"links": null,
+			"memdir": [
+				"testify"
+			],
+			"modtime": "2019-10-13T00:05:14.41886168+03:00",
+			"name": "etc",
+			"size": 0
+		},
+		"etc/testify": {
+			"blocks": 0,
+			"data": "",
+			"dir": true,
+			"id": 5,
+			"linked": "",
+			"links": null,
+			"memdir": [
+				"something"
+			],
+			"modtime": "2019-10-13T00:05:14.418864367+03:00",
+			"name": "etc/testify",
+			"size": 0
+		},
+		"etc/testify/something": {
+			"blocks": 0,
+			"data": "",
+			"dir": false,
+			"id": 6,
+			"linked": "",
+			"links": null,
+			"memdir": null,
+			"modtime": "2019-10-13T00:05:14.418866245+03:00",
+			"name": "etc/testify/something",
+			"size": 0
+		},
+		"even": {
+			"blocks": 0,
+			"data": "",
+			"dir": false,
+			"id": 2,
+			"linked": "",
+			"links": null,
+			"memdir": null,
+			"modtime": "2019-10-13T00:04:56.95879523+03:00",
+			"name": "even",
+			"size": 0
+		},
+		"odd": {
+			"blocks": 0,
+			"data": "",
+			"dir": false,
+			"id": 3,
+			"linked": "",
+			"links": null,
+			"memdir": null,
+			"modtime": "2019-10-13T00:04:56.958796105+03:00",
+			"name": "odd",
+			"size": 0
+		},
+		"somedata": {
+			"blocks": 0,
+			"data": "",
+			"dir": false,
+			"id": 1,
+			"linked": "",
+			"links": null,
+			"memdir": null,
+			"modtime": "2019-10-13T00:04:56.958797001+03:00",
+			"name": "somedata",
+			"size": 0
+		}
+	}
+}

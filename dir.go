@@ -32,6 +32,12 @@ func (m DirMap) Files() (files []*File) {
 	return files
 }
 
+// File - get file by name
+func (m DirMap) File(name string) (*File, bool) {
+	f, ok := m[name]
+	return f, ok
+}
+
 // implement sort.Interface
 type fileSorter []*File
 

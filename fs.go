@@ -15,9 +15,10 @@ import (
 
 // MemFS - inmemory filesystem
 type MemFS struct {
-	count  uint64
-	mount  map[string]*File
-	opened map[int]*File
+	count   uint64
+	mount   map[string]*File
+	opened  map[int]*File
+	current *File
 }
 
 // NewMemFs - init new in-memory filesystem
@@ -25,8 +26,9 @@ func NewMemFs() *MemFS {
 	root := CreateFile("/")
 
 	return &MemFS{
-		mount:  map[string]*File{"/": root},
-		opened: map[int]*File{},
+		current: root,
+		mount:   map[string]*File{"/": root},
+		opened:  map[int]*File{},
 	}
 }
 
@@ -54,17 +56,17 @@ func (m *MemFS) Filestat(id int) {
 // Ls lists all files in the root directory
 // todo: impl list from current dir
 func (m *MemFS) Ls() {
-	root, _ := m.open("/")
 
-	if root.memDir == nil {
+	if m.current.memDir == nil {
 		return
 	}
 
 	template := "%4d %s\n"
-	fmt.Println("total", root.memDir.Len())
+	fmt.Println("total", m.current.memDir.Len())
 
-	for _, file := range root.memDir.Files() {
+	for _, file := range m.current.memDir.Files() {
 		name := strings.TrimLeft(file.Name(), "/")
+		name = filepath.Base(name)
 
 		if file.IsDir() {
 			color.Cyan(template, file.id, name)
@@ -72,6 +74,30 @@ func (m *MemFS) Ls() {
 			fmt.Printf(template, file.id, name)
 		}
 	}
+}
+
+// Pwd print current working directory name
+func (m *MemFS) Pwd() {
+	path := m.current.Name()
+	if path != "/" {
+		path = "/" + path
+	}
+	fmt.Println(path)
+}
+
+// Cd change directory
+func (m *MemFS) Cd(path string) {
+	f, ok := m.current.memDir.File(path)
+	if !ok {
+		fmt.Printf("can't move to %s\n", path)
+		return
+	}
+
+	if !f.IsDir() {
+		errlog.Printf("%s is not directory\n", path)
+		return
+	}
+	m.current = f
 }
 
 // Create new file

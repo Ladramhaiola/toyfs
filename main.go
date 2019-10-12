@@ -157,5 +157,15 @@ func main() {
 		return nil
 	})
 
+	babbler.Command("cd", 1, func(args []string) error {
+		babbler.mounted.Cd(args[0])
+		return nil
+	})
+
+	babbler.Command("pwd", 0, func(args []string) error {
+		babbler.mounted.Pwd()
+		return nil
+	})
+
 	babbler.Run()
 }
