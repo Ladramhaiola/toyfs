@@ -144,6 +144,44 @@ func (m *MemFS) WriteAt(fd, off int, data string) {
 	oklog.Printf("%d bytes written to file\n", n)
 }
 
+// Link file2 to file1
+func (m *MemFS) Link(name2, name1 string) {
+	file, ok := m.mount[name1]
+	if !ok {
+		errlog.Printf("file %s doesn't exist", name1)
+		return
+	}
+
+	file.links = append(file.links, name2)
+	m.registerLink(file, name2)
+}
+
+// Unlink file
+func (m *MemFS) Unlink(name string) {
+	file, err := m.open(name)
+	if err != nil {
+		errlog.Println(err)
+		return
+	}
+
+	parent, err := m.open(file.linked)
+	if err == nil {
+		for i, link := range parent.links {
+			if link == name {
+				if i < len(parent.links)+1 {
+					parent.links = append(parent.links[:i], parent.links[i+1:]...)
+				} else {
+					parent.links = parent.links[:i]
+				}
+			}
+		}
+	}
+
+	if err := m.unregister(name); err != nil {
+		errlog.Println(err)
+	}
+}
+
 // Truncate file size
 func (m *MemFS) Truncate(name string, size int) {
 	file, err := m.open(name)
@@ -221,6 +259,33 @@ func (m *MemFS) register(f *File) {
 	parent.memDir.Add(f)
 	m.mount[f.Name()] = f
 	SetID(f, atomic.AddUint64(&m.count, 1))
+}
+
+func (m *MemFS) registerLink(f *File, as string) {
+	l := m.Create(as)
+	l.blocks = f.blocks
+	l.linked = f.Name()
+	parent := m.findParent(l)
+	// mkdir parent directory if it doesn't exist
+	if parent == nil {
+		parentDir := filepath.Dir(l.Name())
+		err := m.Mkdir(parentDir)
+		if err != nil {
+			return
+		}
+
+		parent, err = m.open(parentDir)
+		if err != nil {
+			return
+		}
+	}
+
+	if parent.memDir == nil {
+		parent.dir = true
+		parent.memDir = &DirMap{}
+	}
+	parent.memDir.Add(l)
+	m.mount[l.Name()] = l
 }
 
 func (m *MemFS) unregister(name string) error {

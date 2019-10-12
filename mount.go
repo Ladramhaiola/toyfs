@@ -19,6 +19,7 @@ type volume struct {
 	DirNames []string  `json:"memdir"`
 	ID       uint64    `json:"id"`
 	Links    []string  `json:"links"`
+	Linked   string    `json:"linked"`
 	Size     int       `json:"size"`
 	Blocks   int       `json:"blocks"`
 	ModTime  time.Time `json:"modtime"`
@@ -98,11 +99,11 @@ func Load(path string) (*MemFS, error) {
 }
 
 func loadfile(v volume) *File {
-	// todo: load dirmap & links
 	f := &File{
 		id:      v.ID,
 		name:    v.Name,
 		links:   v.Links,
+		linked:  v.Linked,
 		dir:     v.Dir,
 		mode:    os.ModeAppend,
 		modtime: v.ModTime,

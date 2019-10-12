@@ -14,6 +14,7 @@ type File struct {
 	name   string
 	id     uint64
 	links  []string
+	linked string
 	blocks []*Block
 
 	dir     bool
@@ -212,6 +213,7 @@ func (f *File) MarshalJSON() ([]byte, error) {
 		"name":    f.name,
 		"id":      f.id,
 		"links":   f.links,
+		"linked":  f.linked,
 		"data":    string(data),
 		"size":    len(f.blocks) * blockSize,
 		"blocks":  len(f.blocks),

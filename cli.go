@@ -40,10 +40,16 @@ func Run() {
 			cli.checkMounted(cli.Create, args)
 		case "open":
 			cli.checkMounted(cli.Open, args)
+		case "close":
+			cli.checkMounted(cli.Close, args)
 		case "read":
 			cli.checkMounted(cli.Read, args)
 		case "write":
 			cli.checkMounted(cli.Write, args)
+		case "link":
+			cli.checkMounted(cli.Link, args)
+		case "unlink":
+			cli.checkMounted(cli.Unlink, args)
 		case "truncate":
 			cli.checkMounted(cli.Truncate, args)
 		default:
@@ -225,10 +231,30 @@ func (c *CLI) Write(args []string) {
 	c.fs.WriteAt(fd, off, data)
 }
 
+// Link command handler
+func (c *CLI) Link(args []string) {
+	if len(args) < 2 {
+		fmt.Println("link takes 2 arguments")
+		return
+	}
+
+	c.fs.Link(args[1], args[0])
+}
+
+// Unlink command handler
+func (c *CLI) Unlink(args []string) {
+	if len(args) < 1 {
+		fmt.Println("unlink takes 1 argument")
+		return
+	}
+
+	c.fs.Unlink(args[0])
+}
+
 // Truncate command handler
 func (c *CLI) Truncate(args []string) {
 	if len(args) < 2 {
-		fmt.Println("truncate tekes 2 arguments")
+		fmt.Println("truncate takes 2 arguments")
 		return
 	}
 
