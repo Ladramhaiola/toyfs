@@ -95,6 +95,7 @@ func Load(path string) (*MemFS, error) {
 		}
 	}
 
+	fs.count = uint64(len(fs.mount) - 1)
 	return fs, err
 }
 
