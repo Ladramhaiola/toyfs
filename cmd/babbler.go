@@ -42,7 +42,6 @@ type Babbler struct {
 // Babble - create new bubbler
 func Babble() *Babbler {
 	b := &Babbler{
-		mounted:  memfs.Create(),
 		commands: make(map[string]*command),
 	}
 
@@ -78,7 +77,7 @@ func (b *Babbler) Exec(input string) {
 		return
 	}
 
-	if name != "mount" && name != "help" && (b.mounted == nil) {
+	if name != "mount" && name != "help" && b.mounted == nil {
 		red.Println("no filesystem mounted")
 		return
 	}

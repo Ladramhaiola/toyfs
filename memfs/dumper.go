@@ -15,13 +15,14 @@ type fproto struct {
 	Size    int64
 	ModTime time.Time
 	Childs  map[string]fproto
+	Parent  string
 	Links   []string
 	Data    string
 }
 
 type fsproto struct {
 	Table   map[uint64]string
-	Volumes *File
+	Volumes fproto
 	Size    uint64
 }
 
@@ -33,10 +34,16 @@ func fileToProto(f *File) fproto {
 		}
 	}
 
+	var parent string
+	if f.parent != nil {
+		parent = f.parent.AbsPath()
+	}
+
 	return fproto{
 		ID:      f.id,
 		Name:    f.name,
 		Dir:     f.dir,
+		Parent:  parent,
 		Size:    f.size,
 		ModTime: f.modtime,
 		Childs:  childs,
@@ -45,7 +52,7 @@ func fileToProto(f *File) fproto {
 	}
 }
 
-func fileFromProto(p *fproto) *File {
+func fileFromProto(fs *MemFS, p *fproto) *File {
 	f := &File{
 		id:      p.ID,
 		name:    p.Name,
@@ -58,11 +65,13 @@ func fileFromProto(p *fproto) *File {
 	if f.dir && len(p.Childs) > 0 {
 		f.childs = make(map[string]*File)
 		for name, file := range p.Childs {
-			f.childs[name] = fileFromProto(&file)
+			f.childs[name] = fileFromProto(fs, &file)
+			f.childs[name].parent = f
 		}
 	}
 
 	f.Write([]byte(p.Data))
+	f.fs = fs
 	return f
 }
 
@@ -72,22 +81,12 @@ func (f *File) MarshalJSON() ([]byte, error) {
 	return json.Marshal(proto)
 }
 
-// UnmarshalJSON for loading
-func (f *File) UnmarshalJSON(data []byte) error {
-	proto := &fproto{}
-	if err := json.Unmarshal(data, proto); err != nil {
-		return err
-	}
-	*f = *fileFromProto(proto)
-	return nil
-}
-
 // MarshalJSON for saving
 func (fs *MemFS) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&fsproto{
 		Size:    fs.ids,
 		Table:   fs.table,
-		Volumes: fs.root,
+		Volumes: fileToProto(fs.root),
 	})
 }
 
@@ -100,7 +99,7 @@ func (fs *MemFS) UnmarshalJSON(data []byte) error {
 
 	fs.ids = proto.Size
 	fs.table = proto.Table
-	fs.root = proto.Volumes
+	fs.root = fileFromProto(fs, &proto.Volumes)
 	fs.wd = fs.root
 	fs.opened = make(map[int]*File)
 	return nil

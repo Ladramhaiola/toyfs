@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"fs/memfs"
+	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -12,7 +14,7 @@ import (
 var (
 	red    = color.New(color.FgHiRed)
 	yellow = color.New(color.FgYellow)
-	oklog  = color.New(color.FgGreen)
+	green  = color.New(color.FgGreen)
 	cyan   = color.New(color.FgHiCyan)
 	blue   = color.New(color.FgBlue)
 )
@@ -22,7 +24,11 @@ func main() {
 
 	b.Command("ls", 0, func(args []string) error {
 		for _, f := range b.mounted.List() {
-			fmt.Println(f.ID(), f.Name())
+			if f.IsDir() {
+				cyan.Printf("%4d %s\n", f.ID(), f.Name())
+			} else {
+				fmt.Printf("%4d %s\n", f.ID(), f.Name())
+			}
 		}
 		return nil
 	})
@@ -74,16 +80,98 @@ func main() {
 		return nil
 	})
 
-	b.Command("unmount", 1, func(args []string) error {
-		return memfs.Save(args[0], b.mounted)
+	b.Command("unmount", 0, func(args []string) error {
+		defer func() { b.mounted = nil }()
+		return memfs.Save(b.fspath, b.mounted)
 	})
 
 	b.Command("mount", 1, func(args []string) error {
 		fs, err := memfs.Load(args[0])
 		if err != nil {
-			return err
+			if !os.IsNotExist(err) {
+				return err
+			}
+
+			fs = memfs.Create()
+			if err := memfs.Save(args[0], fs); err != nil {
+				return err
+			}
 		}
 		b.mounted = fs
+		b.fspath = args[0]
+		return nil
+	})
+
+	b.Command("close", 1, func(args []string) error {
+		fd, err := strconv.Atoi(args[0])
+		if err != nil {
+			return err
+		}
+
+		return b.mounted.Close(fd)
+	})
+
+	b.Command("read", 3, func(args []string) error {
+		fd, err := strconv.Atoi(args[0])
+		if err != nil {
+			return nil
+		}
+		off, err := strconv.Atoi(args[1])
+		if err != nil {
+			return err
+		}
+		size, err := strconv.Atoi(args[2])
+		if err != nil {
+			return err
+		}
+
+		data, err := b.mounted.Read(fd, off, size)
+		if err != nil {
+			return err
+		}
+		green.Println(data)
+		return nil
+	})
+
+	b.Command("write", 4, func(args []string) error {
+		fd, err := strconv.Atoi(args[0])
+		if err != nil {
+			return nil
+		}
+		off, err := strconv.Atoi(args[1])
+		if err != nil {
+			return err
+		}
+		size, err := strconv.Atoi(args[2])
+		if err != nil {
+			return err
+		}
+
+		// todo: bug - not rewriting existing blocks
+		info, err := b.mounted.Write(fd, off, size, strings.Join(args[3:], " "))
+		if err != nil {
+			return err
+		}
+		green.Println(info)
+		return nil
+	})
+
+	// todo: fix truncate
+	b.Command("truncate", 2, func(args []string) error {
+		size, err := strconv.Atoi(args[1])
+		if err != nil {
+			return err
+		}
+
+		return b.mounted.Truncate(args[0], size)
+	})
+
+	b.Command("cat", 1, func(args []string) error {
+		data, err := b.mounted.Cat(args[0])
+		if err != nil {
+			return err
+		}
+		fmt.Println(data)
 		return nil
 	})
 

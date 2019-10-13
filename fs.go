@@ -9,21 +9,22 @@ import (
 type Filesystem interface {
 	Open(name string) (int, error)
 	Create(name string) error
-	OpenFile(name string) (File, error)
+	Read(fd, off, size int) (string, error)
+	Write(fd, off, size int, data string) (string, error)
 
 	ReadDir(path string) ([]File, error)
 	List() []File
 	Pwd() string
-	Stat(id int) (FileInfo, error)
+	Stat(id int) (File, error)
 }
 
 // File represents a file with common operations
 type File interface {
-	Name() string
 	ID() uint64
 	Truncate(int) error
 	ReadAt(p []byte, off int) (int, error)
 	WriteAt(p []byte, off int) (int, error)
+	os.FileInfo
 	io.Closer
 }
 

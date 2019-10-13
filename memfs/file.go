@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 
 	vfs "fs"
@@ -23,7 +22,6 @@ type File struct {
 	childs  map[string]*File
 	links   []string
 	data    []*Block
-	mutex   sync.RWMutex
 }
 
 // Sys returns underlying data source

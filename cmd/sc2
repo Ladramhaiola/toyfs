@@ -4,10 +4,9 @@
 		"2": "/terran",
 		"3": "/protoss",
 		"4": "/zerg/serral",
-		"5": "/zerg/elazer",
-		"6": "/terran/TYTY",
-		"7": "/terran/Maru",
-		"8": "/terran/Heromarine"
+		"5": "/terran/Maru",
+		"6": "/terran/Maru/topich",
+		"7": "/wcs"
 	},
 	"Volumes": {
 		"ID": 0,
@@ -21,8 +20,9 @@
 				"Name": "protoss",
 				"Dir": true,
 				"Size": 0,
-				"ModTime": "2019-10-13T22:48:14.559394538+03:00",
+				"ModTime": "2019-10-13T23:46:16.828343464+03:00",
 				"Childs": {},
+				"Parent": "/",
 				"Links": null,
 				"Data": ""
 			},
@@ -31,76 +31,74 @@
 				"Name": "terran",
 				"Dir": true,
 				"Size": 0,
-				"ModTime": "2019-10-13T22:48:10.220920326+03:00",
+				"ModTime": "2019-10-13T23:46:04.601848563+03:00",
 				"Childs": {
-					"Heromarine": {
-						"ID": 8,
-						"Name": "Heromarine",
+					"Maru": {
+						"ID": 5,
+						"Name": "Maru",
 						"Dir": true,
 						"Size": 0,
-						"ModTime": "2019-10-13T22:49:03.290034287+03:00",
-						"Childs": {},
-						"Links": null,
-						"Data": ""
-					},
-					"Maru": {
-						"ID": 7,
-						"Name": "Maru",
-						"Dir": false,
-						"Size": 0,
-						"ModTime": "2019-10-13T22:48:51.442149883+03:00",
-						"Childs": {},
-						"Links": null,
-						"Data": ""
-					},
-					"TYTY": {
-						"ID": 6,
-						"Name": "TYTY",
-						"Dir": false,
-						"Size": 0,
-						"ModTime": "2019-10-13T22:48:42.971327112+03:00",
-						"Childs": {},
+						"ModTime": "2019-10-13T23:46:35.834338524+03:00",
+						"Childs": {
+							"topich": {
+								"ID": 6,
+								"Name": "topich",
+								"Dir": false,
+								"Size": 0,
+								"ModTime": "2019-10-13T23:46:49.855107399+03:00",
+								"Childs": {},
+								"Parent": "/terran/Maru",
+								"Links": null,
+								"Data": ""
+							}
+						},
+						"Parent": "/terran",
 						"Links": null,
 						"Data": ""
 					}
 				},
+				"Parent": "/",
 				"Links": null,
 				"Data": ""
+			},
+			"wcs": {
+				"ID": 7,
+				"Name": "wcs",
+				"Dir": false,
+				"Size": 0,
+				"ModTime": "2019-10-14T00:39:09.561945683+03:00",
+				"Childs": {},
+				"Parent": "/",
+				"Links": null,
+				"Data": "seems li\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000evnjaentjvkawnbnke serra"
 			},
 			"zerg": {
 				"ID": 1,
 				"Name": "zerg",
 				"Dir": true,
 				"Size": 0,
-				"ModTime": "2019-10-13T22:48:06.851765004+03:00",
+				"ModTime": "2019-10-13T23:46:01.383905232+03:00",
 				"Childs": {
-					"elazer": {
-						"ID": 5,
-						"Name": "elazer",
-						"Dir": true,
-						"Size": 0,
-						"ModTime": "2019-10-13T22:48:37.37560713+03:00",
-						"Childs": {},
-						"Links": null,
-						"Data": ""
-					},
 					"serral": {
 						"ID": 4,
 						"Name": "serral",
 						"Dir": true,
 						"Size": 0,
-						"ModTime": "2019-10-13T22:48:30.221810674+03:00",
+						"ModTime": "2019-10-13T23:46:27.264742715+03:00",
 						"Childs": {},
+						"Parent": "/zerg",
 						"Links": null,
 						"Data": ""
 					}
 				},
+				"Parent": "/",
 				"Links": null,
 				"Data": ""
 			}
 		},
+		"Parent": "",
 		"Links": null,
 		"Data": ""
 	},
-	"Size": 8
+	"Size": 7
 }

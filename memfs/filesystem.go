@@ -63,6 +63,17 @@ func (fs *MemFS) Mkdir(name string) error {
 	return nil
 }
 
+// Stat - filestats
+func (fs *MemFS) Stat(id int) (vfs.File, error) {
+	path, ok := fs.table[uint64(id)]
+	if !ok {
+		return nil, fmt.Errorf("file with id %d doesn't exist", id)
+	}
+
+	_, f, err := fs.file(path)
+	return f, err
+}
+
 // List file names inside current directory
 func (fs *MemFS) List() []vfs.File {
 	files := make([]vfs.File, 0, len(fs.wd.childs))
@@ -70,32 +81,6 @@ func (fs *MemFS) List() []vfs.File {
 		files = append(files, f)
 	}
 	return files
-}
-
-// Open opens file by its name
-func (fs *MemFS) Open(name string) (int, error) {
-	name = filepath.Clean(name)
-	base := filepath.Base(name)
-
-	_, f, err := fs.file(name)
-	if err != nil {
-		return 0, &os.PathError{Op: "open", Path: name, Err: err}
-	}
-
-	if f == nil {
-		return 0, &os.PathError{Op: "open", Path: name, Err: os.ErrNotExist}
-	}
-	if f.dir {
-		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is a directory", base)}
-	}
-
-	fd := rand.Intn(1000)
-	if _, ok := fs.opened[fd]; ok {
-		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is already opened", name)}
-	}
-	fs.opened[fd] = f
-
-	return fd, nil
 }
 
 // Create new file
@@ -128,48 +113,82 @@ func (fs *MemFS) Create(name string) error {
 	return nil
 }
 
-// OpenFile opens file if it exists or creates new
-func (fs *MemFS) OpenFile(name string) (vfs.File, error) {
+// Open opens file by its name
+func (fs *MemFS) Open(name string) (int, error) {
 	name = filepath.Clean(name)
 	base := filepath.Base(name)
 
-	parent, f, err := fs.file(name)
+	_, f, err := fs.file(name)
 	if err != nil {
-		return nil, &os.PathError{Op: "open", Path: name, Err: err}
+		return 0, &os.PathError{Op: "open", Path: name, Err: err}
 	}
 
-	if f == nil { // create file
-		f = &File{
-			name:    base,
-			id:      atomic.AddUint64(&fs.ids, 1),
-			dir:     false,
-			mode:    os.ModeAppend,
-			parent:  parent,
-			modtime: time.Now(),
-			fs:      fs,
-		}
-
-		parent.childs[base] = f
-		fs.table[f.id] = f.AbsPath()
-	} else { // file exists
-		if f.dir {
-			return nil, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is a directory", base)}
-		}
+	if f == nil {
+		return 0, &os.PathError{Op: "open", Path: name, Err: os.ErrNotExist}
+	}
+	if f.dir {
+		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is a directory", base)}
 	}
 
-	f.modtime = time.Now()
-	return f, nil
+	fd := rand.Intn(1000)
+	if _, ok := fs.opened[fd]; ok {
+		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is already opened", name)}
+	}
+	fs.opened[fd] = f
+
+	return fd, nil
 }
 
-// Stat - filestats
-func (fs *MemFS) Stat(id int) (vfs.FileInfo, error) {
-	path, ok := fs.table[uint64(id)]
+// Close the file
+func (fs *MemFS) Close(fd int) error {
+	delete(fs.opened, fd)
+	return nil
+}
+
+// Read specified size with offset
+func (fs *MemFS) Read(fd, off, size int) (string, error) {
+	f, ok := fs.opened[fd]
 	if !ok {
-		return nil, fmt.Errorf("file with id %d doesn't exist", id)
+		return "", fmt.Errorf("file isn't opened")
 	}
 
-	_, f, err := fs.file(path)
-	return f, err
+	var data = make([]byte, size)
+	if _, err := f.ReadAt(data, off); err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+// Write data with specified size and offset
+func (fs *MemFS) Write(fd, off, size int, data string) (string, error) {
+	f, ok := fs.opened[fd]
+	if !ok {
+		return "", fmt.Errorf("file isn't opened")
+	}
+
+	if len(data) > size {
+		data = data[:size]
+	}
+	n, err := f.WriteAt([]byte(data), off)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%d bytes written to file", n), nil
+}
+
+// Truncate file size
+func (fs *MemFS) Truncate(name string, size int) error {
+	name = filepath.Clean(name)
+	_, f, err := fs.file(name)
+	if err != nil {
+		return &os.PathError{Op: "readdir", Path: name, Err: err}
+	}
+	if f == nil || f.dir {
+		return &os.PathError{Op: "readdir", Path: name, Err: os.ErrNotExist}
+	}
+
+	return f.Truncate(size)
 }
 
 // ReadDir reads the directory and returns list of files
@@ -203,12 +222,26 @@ func (fs *MemFS) Cd(path string) error {
 	}
 
 	fs.wd = f
+	fmt.Printf("DEBUG cd %+v\n", fs.wd)
 	return nil
 }
 
-// Pwd -
+// Pwd - get working directory
 func (fs *MemFS) Pwd() string {
 	return fs.wd.AbsPath()
+}
+
+// Cat - print file data
+func (fs *MemFS) Cat(name string) (string, error) {
+	_, f, err := fs.file(name)
+	if err != nil {
+		return "", &os.PathError{Op: "cat", Path: name, Err: err}
+	}
+	if f == nil || f.dir {
+		return "", &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+	}
+
+	return string(f.Read()), nil
 }
 
 // find file and its parent in filesystem
