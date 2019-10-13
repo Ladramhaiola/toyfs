@@ -94,15 +94,24 @@ func (b *Babbler) Run() {
 		input := scanner.Text()
 
 		if input == "" {
-			cyan.Print("$ ")
+			b.line()
 			continue
 		}
 
 		b.Exec(input)
-		cyan.Print("$ ")
+		b.line()
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func (b *Babbler) line() {
+	if b.mounted != nil && b.mounted.current != nil {
+		blue.Print(b.mounted.Pwd())
+		cyan.Print(" $ ")
+	} else {
+		cyan.Print("$ ")
 	}
 }

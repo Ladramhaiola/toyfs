@@ -23,7 +23,7 @@ type MemFS struct {
 
 // NewMemFs - init new in-memory filesystem
 func NewMemFs() *MemFS {
-	root := CreateFile("/")
+	root := CreateDir("/")
 
 	return &MemFS{
 		current: root,
@@ -77,18 +77,18 @@ func (m *MemFS) Ls() {
 }
 
 // Pwd print current working directory name
-func (m *MemFS) Pwd() {
+func (m *MemFS) Pwd() string {
 	path := m.current.Name()
 	if path != "/" {
 		path = "/" + path
 	}
-	fmt.Println(path)
+	return path
 }
 
 // Cd change directory
 func (m *MemFS) Cd(path string) {
-	f, ok := m.current.memDir.File(path)
-	if !ok {
+	f, err := m.open(path)
+	if err != nil {
 		fmt.Printf("can't move to %s\n", path)
 		return
 	}
@@ -102,8 +102,8 @@ func (m *MemFS) Cd(path string) {
 
 // Create new file
 func (m *MemFS) Create(name string) *File {
-	name = normPath(name)
-	name = strings.TrimLeft(name, "/")
+	name = m.normPath(name)
+	// name = strings.TrimLeft(name, "/")
 	file := CreateFile(name)
 	m.register(file)
 	return file
@@ -222,7 +222,7 @@ func (m *MemFS) Truncate(name string, size int) {
 
 // Mkdir -
 func (m *MemFS) Mkdir(name string) error {
-	name = normPath(name)
+	name = m.normPath(name)
 	f, ok := m.mount[name]
 	if ok && !f.IsDir() {
 		return &os.PathError{Op: "mkdir", Path: name, Err: os.ErrExist}
@@ -233,21 +233,40 @@ func (m *MemFS) Mkdir(name string) error {
 	return nil
 }
 
-// Remove -
-func (m *MemFS) Remove(name string) error {
-	name = normPath(name)
-
-	file, ok := m.mount[name]
-	if !ok {
-		return &os.PathError{Op: "remove", Path: name, Err: os.ErrNotExist}
+// Rmdir -
+func (m *MemFS) Rmdir(name string) error {
+	f, err := m.open(name)
+	if err != nil {
+		return err
 	}
 
-	if file.IsDir() {
-		return &os.PathError{Op: "remove", Path: name, Err: errors.New("can't remove directory")}
+	if !f.IsDir() {
+		return fmt.Errorf("%s is not a directory", name)
+	}
+
+	if f.memDir != nil || f.memDir.Len() != 0 {
+		return fmt.Errorf("%s is not empty", name)
 	}
 
 	if err := m.unregister(name); err != nil {
-		return &os.PathError{Op: "remove", Path: name, Err: err}
+		return &os.PathError{Op: "rmdir", Path: name, Err: err}
+	}
+	return nil
+}
+
+// Remove -
+func (m *MemFS) Remove(name string) error {
+	file, err := m.open(name)
+	if err != nil {
+		return &os.PathError{Op: "rm", Path: name, Err: err}
+	}
+
+	if file.IsDir() {
+		return &os.PathError{Op: "rm", Path: name, Err: errors.New("can't remove directory")}
+	}
+
+	if err := m.unregister(name); err != nil {
+		return &os.PathError{Op: "rm", Path: name, Err: err}
 	}
 	return nil
 }
@@ -330,21 +349,29 @@ func (m *MemFS) unregister(name string) error {
 }
 
 func (m *MemFS) open(name string) (*File, error) {
-	name = normPath(name)
+	name = m.normPath(name)
 	file, ok := m.mount[name]
 	if !ok {
+		fmt.Println("DEBUG open:", name)
 		return nil, os.ErrNotExist
 	}
 	return file, nil
 }
 
-func normPath(path string) string {
+func (m *MemFS) normPath(path string) string {
 	path = filepath.Clean(path)
 
 	if path == "." || path == ".." {
 		return "/"
 	}
 	return path
+}
+
+func (m *MemFS) absPath(path string) string {
+	if strings.HasPrefix(path, "/") {
+		return strings.TrimLeft(path, "/")
+	}
+	return strings.TrimLeft(m.current.Name()+"/"+path, "/")
 }
 
 // MarshalJSON -

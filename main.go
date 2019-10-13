@@ -21,6 +21,7 @@ var (
 	infolog = color.New(color.FgYellow)
 	oklog   = color.New(color.FgGreen)
 	cyan    = color.New(color.FgHiCyan)
+	blue    = color.New(color.FgHiBlue)
 )
 
 func main() {
@@ -157,13 +158,25 @@ func main() {
 		return nil
 	})
 
+	babbler.Command("rm", 1, func(args []string) error {
+		return babbler.mounted.Remove(args[0])
+	})
+
+	babbler.Command("rmdir", 1, func(args []string) error {
+		return babbler.mounted.Rmdir(args[0])
+	})
+
+	babbler.Command("mkdir", 1, func(args []string) error {
+		return babbler.mounted.Mkdir(args[0])
+	})
+
 	babbler.Command("cd", 1, func(args []string) error {
 		babbler.mounted.Cd(args[0])
 		return nil
 	})
 
 	babbler.Command("pwd", 0, func(args []string) error {
-		babbler.mounted.Pwd()
+		fmt.Println(babbler.mounted.Pwd())
 		return nil
 	})
 

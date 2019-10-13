@@ -1,0 +1,19 @@
+{
+	"blocksize": 10,
+	"descriptors": 10,
+	"linkcount": 6,
+	"volumes": {
+		"/": {
+			"blocks": 0,
+			"data": "",
+			"dir": true,
+			"id": 0,
+			"linked": "",
+			"links": null,
+			"memdir": null,
+			"modtime": "2019-10-13T16:55:25.258243153+03:00",
+			"name": "/",
+			"size": 0
+		}
+	}
+}
