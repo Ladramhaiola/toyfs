@@ -1,4 +1,4 @@
-package main
+package memfs
 
 import (
 	"errors"
@@ -9,6 +9,8 @@ type Block struct {
 	size int
 	data []byte
 }
+
+const blockSize = 8
 
 var (
 	// ErrWriteBytes -
