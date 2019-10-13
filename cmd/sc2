@@ -1,0 +1,106 @@
+{
+	"Table": {
+		"1": "/zerg",
+		"2": "/terran",
+		"3": "/protoss",
+		"4": "/zerg/serral",
+		"5": "/zerg/elazer",
+		"6": "/terran/TYTY",
+		"7": "/terran/Maru",
+		"8": "/terran/Heromarine"
+	},
+	"Volumes": {
+		"ID": 0,
+		"Name": "/",
+		"Dir": true,
+		"Size": 0,
+		"ModTime": "0001-01-01T00:00:00Z",
+		"Childs": {
+			"protoss": {
+				"ID": 3,
+				"Name": "protoss",
+				"Dir": true,
+				"Size": 0,
+				"ModTime": "2019-10-13T22:48:14.559394538+03:00",
+				"Childs": {},
+				"Links": null,
+				"Data": ""
+			},
+			"terran": {
+				"ID": 2,
+				"Name": "terran",
+				"Dir": true,
+				"Size": 0,
+				"ModTime": "2019-10-13T22:48:10.220920326+03:00",
+				"Childs": {
+					"Heromarine": {
+						"ID": 8,
+						"Name": "Heromarine",
+						"Dir": true,
+						"Size": 0,
+						"ModTime": "2019-10-13T22:49:03.290034287+03:00",
+						"Childs": {},
+						"Links": null,
+						"Data": ""
+					},
+					"Maru": {
+						"ID": 7,
+						"Name": "Maru",
+						"Dir": false,
+						"Size": 0,
+						"ModTime": "2019-10-13T22:48:51.442149883+03:00",
+						"Childs": {},
+						"Links": null,
+						"Data": ""
+					},
+					"TYTY": {
+						"ID": 6,
+						"Name": "TYTY",
+						"Dir": false,
+						"Size": 0,
+						"ModTime": "2019-10-13T22:48:42.971327112+03:00",
+						"Childs": {},
+						"Links": null,
+						"Data": ""
+					}
+				},
+				"Links": null,
+				"Data": ""
+			},
+			"zerg": {
+				"ID": 1,
+				"Name": "zerg",
+				"Dir": true,
+				"Size": 0,
+				"ModTime": "2019-10-13T22:48:06.851765004+03:00",
+				"Childs": {
+					"elazer": {
+						"ID": 5,
+						"Name": "elazer",
+						"Dir": true,
+						"Size": 0,
+						"ModTime": "2019-10-13T22:48:37.37560713+03:00",
+						"Childs": {},
+						"Links": null,
+						"Data": ""
+					},
+					"serral": {
+						"ID": 4,
+						"Name": "serral",
+						"Dir": true,
+						"Size": 0,
+						"ModTime": "2019-10-13T22:48:30.221810674+03:00",
+						"Childs": {},
+						"Links": null,
+						"Data": ""
+					}
+				},
+				"Links": null,
+				"Data": ""
+			}
+		},
+		"Links": null,
+		"Data": ""
+	},
+	"Size": 8
+}
