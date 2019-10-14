@@ -12,7 +12,6 @@ type Filesystem interface {
 	Read(fd, off, size int) (string, error)
 	Write(fd, off, size int, data string) (string, error)
 
-	ReadDir(path string) ([]File, error)
 	List() []File
 	Pwd() string
 	Stat(id int) (File, error)

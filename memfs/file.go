@@ -16,6 +16,7 @@ type File struct {
 	dir     bool
 	mode    os.FileMode
 	parent  *File
+	linked  string
 	size    int64
 	modtime time.Time
 	fs      vfs.Filesystem

@@ -1,12 +1,20 @@
 {
 	"Table": {
 		"1": "/zerg",
+		"10": "/test/this/pepega",
+		"11": "/fastly",
+		"12": "/fastly/unknown",
+		"13": "/heh",
+		"14": "/zerg/serral/2019",
+		"15": "/zerg/serral/2018",
 		"2": "/terran",
 		"3": "/protoss",
 		"4": "/zerg/serral",
 		"5": "/terran/Maru",
 		"6": "/terran/Maru/topich",
-		"7": "/wcs"
+		"7": "/wcs",
+		"8": "/test",
+		"9": "/test/this"
 	},
 	"Volumes": {
 		"ID": 0,
@@ -61,6 +69,41 @@
 				"Links": null,
 				"Data": ""
 			},
+			"test": {
+				"ID": 8,
+				"Name": "test",
+				"Dir": true,
+				"Size": 0,
+				"ModTime": "2019-10-14T02:01:09.007733545+03:00",
+				"Childs": {
+					"this": {
+						"ID": 9,
+						"Name": "this",
+						"Dir": true,
+						"Size": 0,
+						"ModTime": "2019-10-14T02:01:09.007746018+03:00",
+						"Childs": {
+							"pepega": {
+								"ID": 10,
+								"Name": "pepega",
+								"Dir": true,
+								"Size": 0,
+								"ModTime": "2019-10-14T02:01:09.007770648+03:00",
+								"Childs": {},
+								"Parent": "/test/this",
+								"Links": null,
+								"Data": ""
+							}
+						},
+						"Parent": "/test",
+						"Links": null,
+						"Data": ""
+					}
+				},
+				"Parent": "/",
+				"Links": null,
+				"Data": ""
+			},
 			"wcs": {
 				"ID": 7,
 				"Name": "wcs",
@@ -85,7 +128,19 @@
 						"Dir": true,
 						"Size": 0,
 						"ModTime": "2019-10-13T23:46:27.264742715+03:00",
-						"Childs": {},
+						"Childs": {
+							"2019": {
+								"ID": 14,
+								"Name": "2019",
+								"Dir": false,
+								"Size": 0,
+								"ModTime": "2019-10-14T02:42:50.577326516+03:00",
+								"Childs": {},
+								"Parent": "/zerg/serral",
+								"Links": [],
+								"Data": "win\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+							}
+						},
 						"Parent": "/zerg",
 						"Links": null,
 						"Data": ""
@@ -100,5 +155,5 @@
 		"Links": null,
 		"Data": ""
 	},
-	"Size": 7
+	"Size": 15
 }

@@ -156,7 +156,7 @@ func main() {
 		return nil
 	})
 
-	// todo: fix truncate
+	// todo: fix truncating size
 	b.Command("truncate", 2, func(args []string) error {
 		size, err := strconv.Atoi(args[1])
 		if err != nil {
@@ -164,6 +164,22 @@ func main() {
 		}
 
 		return b.mounted.Truncate(args[0], size)
+	})
+
+	b.Command("rm", 1, func(args []string) error {
+		return b.mounted.Remove(args[0])
+	})
+
+	b.Command("rmdir", 1, func(args []string) error {
+		return b.mounted.RemoveDir(args[0])
+	})
+
+	b.Command("link", 2, func(args []string) error {
+		return b.mounted.Link(args[0], args[1])
+	})
+
+	b.Command("unlink", 1, func(args []string) error {
+		return b.mounted.Unlink(args[0])
 	})
 
 	b.Command("cat", 1, func(args []string) error {

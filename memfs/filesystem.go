@@ -42,7 +42,15 @@ func (fs *MemFS) Mkdir(name string) error {
 	base := filepath.Base(name)
 	parent, f, err := fs.file(name)
 	if err != nil {
-		return &os.PathError{Op: "mkdir", Path: name, Err: err}
+		if !os.IsNotExist(err) {
+			return &os.PathError{Op: "mkdir", Path: name, Err: err}
+		}
+
+		// create parent directory if it doesn't exist
+		if err := fs.Mkdir(filepath.Dir(name)); err != nil {
+			return err
+		}
+		_, parent, _ = fs.file(filepath.Dir(name))
 	}
 	if f != nil {
 		return &os.PathError{Op: "mkdir", Path: name, Err: fmt.Errorf("directory %q already exists", name)}
@@ -56,6 +64,10 @@ func (fs *MemFS) Mkdir(name string) error {
 		parent:  parent,
 		modtime: time.Now(),
 		fs:      fs,
+	}
+
+	if parent.childs == nil {
+		parent.childs = make(map[string]*File)
 	}
 
 	parent.childs[base] = f
@@ -90,7 +102,15 @@ func (fs *MemFS) Create(name string) error {
 
 	parent, f, err := fs.file(name)
 	if err != nil {
-		return &os.PathError{Op: "create", Path: name, Err: err}
+		if !os.IsNotExist(err) {
+			return &os.PathError{Op: "create", Path: name, Err: err}
+		}
+
+		// create parent directory if it doesn't exist
+		if err := fs.Mkdir(filepath.Dir(name)); err != nil {
+			return err
+		}
+		parent, _, _ = fs.file(name)
 	}
 
 	if f != nil {
@@ -191,26 +211,6 @@ func (fs *MemFS) Truncate(name string, size int) error {
 	return f.Truncate(size)
 }
 
-// ReadDir reads the directory and returns list of files
-func (fs *MemFS) ReadDir(path string) ([]vfs.File, error) {
-	path = filepath.Clean(path)
-	_, f, err := fs.file(path)
-	if err != nil {
-		return nil, &os.PathError{Op: "readdir", Path: path, Err: err}
-	}
-	if f == nil || !f.dir {
-		return nil, &os.PathError{Op: "readdir", Path: path, Err: fmt.Errorf("not directory")}
-	}
-
-	files := make([]vfs.File, 0, len(f.childs))
-	for _, file := range f.childs {
-		files = append(files, file)
-	}
-
-	// todo: sort by name | id
-	return files, nil
-}
-
 // Cd change directory
 func (fs *MemFS) Cd(path string) error {
 	_, f, err := fs.file(filepath.Clean(path))
@@ -222,13 +222,96 @@ func (fs *MemFS) Cd(path string) error {
 	}
 
 	fs.wd = f
-	fmt.Printf("DEBUG cd %+v\n", fs.wd)
 	return nil
 }
 
 // Pwd - get working directory
 func (fs *MemFS) Pwd() string {
 	return fs.wd.AbsPath()
+}
+
+// Link name2 to name1
+func (fs *MemFS) Link(name1, name2 string) error {
+	name1 = filepath.Clean(name1)
+	name2 = filepath.Clean(name2)
+	_, f, err := fs.file(name1)
+	if err != nil {
+		return &os.PathError{Op: "cat", Path: name1, Err: err}
+	}
+	if f == nil || f.dir {
+		return &os.PathError{Op: "cat", Path: name1, Err: os.ErrNotExist}
+	}
+
+	if err := fs.Create(name2); err != nil {
+		return err
+	}
+	f.links = append(f.links, name2)
+
+	_, link, _ := fs.file(name2)
+	link.data = f.data
+	link.linked = f.AbsPath()
+	return nil
+}
+
+// Unlink file
+func (fs *MemFS) Unlink(name string) error {
+	name = filepath.Clean(name)
+	p, f, err := fs.file(name)
+	if err != nil {
+		return &os.PathError{Op: "cat", Path: name, Err: err}
+	}
+	if f == nil || f.dir {
+		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+	}
+
+	_, parent, err := fs.file(f.linked)
+	if err == nil {
+		for i, link := range parent.links {
+			if link == f.name {
+				if len(parent.links)+1 > i {
+					parent.links = append(parent.links[:i], parent.links[i+1:]...)
+				} else {
+					parent.links = parent.links[:i]
+				}
+			}
+		}
+	}
+
+	delete(p.childs, f.name)
+	return nil
+}
+
+// Remove file
+func (fs *MemFS) Remove(name string) error {
+	name = filepath.Clean(name)
+	parent, f, err := fs.file(name)
+	if err != nil {
+		return &os.PathError{Op: "cat", Path: name, Err: err}
+	}
+	if f == nil || f.dir {
+		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+	}
+
+	delete(parent.childs, f.name)
+	return nil
+}
+
+// RemoveDir -
+func (fs *MemFS) RemoveDir(name string) error {
+	name = filepath.Clean(name)
+	parent, f, err := fs.file(name)
+	if err != nil {
+		return &os.PathError{Op: "cat", Path: name, Err: err}
+	}
+	if f == nil || !f.dir {
+		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+	}
+	if len(f.childs) > 0 {
+		return fmt.Errorf("directory is not empty")
+	}
+
+	delete(parent.childs, f.name)
+	return nil
 }
 
 // Cat - print file data
