@@ -72,3 +72,23 @@ func (fs *MemFS) file(path string) (*File, *File, error) {
 
 	return parent, nil, nil
 }
+
+func (fs *MemFS) parseSymlink(name string) (string, bool) {
+	name = filepath.Clean(name)
+	_, f, err := fs.file(name)
+	if err != nil {
+		return "", false
+	}
+
+	if f == nil {
+		return "", false
+	}
+
+	var data = make([]byte, 4)
+	if _, err = f.ReadAt(data, 0); err != nil {
+		return "", false
+	}
+
+	symlink := string(data)
+	return symlink[4:], symlink[:4] == "sym:"
+}

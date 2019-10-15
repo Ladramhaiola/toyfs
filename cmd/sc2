@@ -1,20 +1,12 @@
 {
 	"Table": {
 		"1": "/zerg",
-		"10": "/test/this/pepega",
-		"11": "/fastly",
-		"12": "/fastly/unknown",
-		"13": "/heh",
-		"14": "/zerg/serral/2019",
-		"15": "/zerg/serral/2018",
-		"2": "/terran",
-		"3": "/protoss",
-		"4": "/zerg/serral",
-		"5": "/terran/Maru",
-		"6": "/terran/Maru/topich",
-		"7": "/wcs",
-		"8": "/test",
-		"9": "/test/this"
+		"2": "/zerg/serral",
+		"3": "/terran",
+		"4": "/wcs",
+		"5": "/gsl",
+		"6": "/pepega",
+		"7": "/pepega"
 	},
 	"Volumes": {
 		"ID": 0,
@@ -23,124 +15,64 @@
 		"Size": 0,
 		"ModTime": "0001-01-01T00:00:00Z",
 		"Childs": {
-			"protoss": {
-				"ID": 3,
-				"Name": "protoss",
-				"Dir": true,
+			"gsl": {
+				"ID": 5,
+				"Name": "gsl",
+				"Dir": false,
 				"Size": 0,
-				"ModTime": "2019-10-13T23:46:16.828343464+03:00",
+				"ModTime": "2019-10-14T17:45:09.670881029+03:00",
+				"Childs": {},
+				"Parent": "/",
+				"Links": [],
+				"Data": "oooooooooooooooooooo\u0000\u0000\u0000\u0000"
+			},
+			"pepega": {
+				"ID": 7,
+				"Name": "pepega",
+				"Dir": false,
+				"Size": 0,
+				"ModTime": "2019-10-14T17:46:13.505763574+03:00",
 				"Childs": {},
 				"Parent": "/",
 				"Links": null,
-				"Data": ""
+				"Data": "sym:/gsl"
 			},
 			"terran": {
-				"ID": 2,
+				"ID": 3,
 				"Name": "terran",
 				"Dir": true,
 				"Size": 0,
-				"ModTime": "2019-10-13T23:46:04.601848563+03:00",
-				"Childs": {
-					"Maru": {
-						"ID": 5,
-						"Name": "Maru",
-						"Dir": true,
-						"Size": 0,
-						"ModTime": "2019-10-13T23:46:35.834338524+03:00",
-						"Childs": {
-							"topich": {
-								"ID": 6,
-								"Name": "topich",
-								"Dir": false,
-								"Size": 0,
-								"ModTime": "2019-10-13T23:46:49.855107399+03:00",
-								"Childs": {},
-								"Parent": "/terran/Maru",
-								"Links": null,
-								"Data": ""
-							}
-						},
-						"Parent": "/terran",
-						"Links": null,
-						"Data": ""
-					}
-				},
-				"Parent": "/",
-				"Links": null,
-				"Data": ""
-			},
-			"test": {
-				"ID": 8,
-				"Name": "test",
-				"Dir": true,
-				"Size": 0,
-				"ModTime": "2019-10-14T02:01:09.007733545+03:00",
-				"Childs": {
-					"this": {
-						"ID": 9,
-						"Name": "this",
-						"Dir": true,
-						"Size": 0,
-						"ModTime": "2019-10-14T02:01:09.007746018+03:00",
-						"Childs": {
-							"pepega": {
-								"ID": 10,
-								"Name": "pepega",
-								"Dir": true,
-								"Size": 0,
-								"ModTime": "2019-10-14T02:01:09.007770648+03:00",
-								"Childs": {},
-								"Parent": "/test/this",
-								"Links": null,
-								"Data": ""
-							}
-						},
-						"Parent": "/test",
-						"Links": null,
-						"Data": ""
-					}
-				},
+				"ModTime": "2019-10-14T17:44:58.46170283+03:00",
+				"Childs": {},
 				"Parent": "/",
 				"Links": null,
 				"Data": ""
 			},
 			"wcs": {
-				"ID": 7,
+				"ID": 4,
 				"Name": "wcs",
 				"Dir": false,
 				"Size": 0,
-				"ModTime": "2019-10-14T00:39:09.561945683+03:00",
+				"ModTime": "2019-10-14T17:45:04.945679311+03:00",
 				"Childs": {},
 				"Parent": "/",
 				"Links": null,
-				"Data": "oafvoentbvownebnwrobmwr\u0000jvkawnbnke serra"
+				"Data": "oooo\u0000\u0000\u0000\u0000"
 			},
 			"zerg": {
 				"ID": 1,
 				"Name": "zerg",
 				"Dir": true,
 				"Size": 0,
-				"ModTime": "2019-10-13T23:46:01.383905232+03:00",
+				"ModTime": "2019-10-14T17:44:49.957069674+03:00",
 				"Childs": {
 					"serral": {
-						"ID": 4,
+						"ID": 2,
 						"Name": "serral",
 						"Dir": true,
 						"Size": 0,
-						"ModTime": "2019-10-13T23:46:27.264742715+03:00",
-						"Childs": {
-							"2019": {
-								"ID": 14,
-								"Name": "2019",
-								"Dir": false,
-								"Size": 0,
-								"ModTime": "2019-10-14T02:42:50.577326516+03:00",
-								"Childs": {},
-								"Parent": "/zerg/serral",
-								"Links": [],
-								"Data": "win\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
-							}
-						},
+						"ModTime": "2019-10-14T17:44:54.587649778+03:00",
+						"Childs": {},
 						"Parent": "/zerg",
 						"Links": null,
 						"Data": ""
@@ -155,5 +87,5 @@
 		"Links": null,
 		"Data": ""
 	},
-	"Size": 15
+	"Size": 7
 }

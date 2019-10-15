@@ -71,6 +71,15 @@ func (b *Block) Busy() bool {
 	return len(b.data) > 0
 }
 
+// Truncate block
+func (b *Block) Truncate(size int) {
+	if size < 0 || size > blockSize {
+		return
+	}
+
+	b.Write(b.data[:size])
+}
+
 // Avaivable -
 func (b *Block) Avaivable() int {
 	return blockSize - b.size

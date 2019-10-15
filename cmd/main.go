@@ -178,6 +178,10 @@ func main() {
 		return b.mounted.Link(args[0], args[1])
 	})
 
+	b.Command("ln", 2, func(args []string) error {
+		return b.mounted.Ln(args[0], args[1])
+	})
+
 	b.Command("unlink", 1, func(args []string) error {
 		return b.mounted.Unlink(args[0])
 	})

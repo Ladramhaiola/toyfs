@@ -149,6 +149,13 @@ func (fs *MemFS) Open(name string) (int, error) {
 		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is a directory", base)}
 	}
 
+	var symflag = make([]byte, 4)
+	_, err = f.ReadAt(symflag, 0)
+	if err == nil && string(symflag) == "sym:" {
+		path := string(f.Read())[4:]
+		return fs.Open(path)
+	}
+
 	fd := rand.Intn(1000)
 	if _, ok := fs.opened[fd]; ok {
 		return 0, &os.PathError{Op: "open", Path: name, Err: fmt.Errorf("%q is already opened", name)}
@@ -235,10 +242,10 @@ func (fs *MemFS) Link(name1, name2 string) error {
 	name2 = filepath.Clean(name2)
 	_, f, err := fs.file(name1)
 	if err != nil {
-		return &os.PathError{Op: "cat", Path: name1, Err: err}
+		return &os.PathError{Op: "link", Path: name1, Err: err}
 	}
 	if f == nil || f.dir {
-		return &os.PathError{Op: "cat", Path: name1, Err: os.ErrNotExist}
+		return &os.PathError{Op: "link", Path: name1, Err: os.ErrNotExist}
 	}
 
 	if err := fs.Create(name2); err != nil {
@@ -252,15 +259,41 @@ func (fs *MemFS) Link(name1, name2 string) error {
 	return nil
 }
 
+// Ln - create symlink
+func (fs *MemFS) Ln(name1, name2 string) error {
+	name1 = filepath.Clean(name1)
+	name2 = filepath.Clean(name2)
+	_, f, err := fs.file(name1)
+	if err != nil {
+		return &os.PathError{Op: "ln", Path: name1, Err: err}
+	}
+	if f == nil || f.dir {
+		return &os.PathError{Op: "ln", Path: name1, Err: os.ErrNotExist}
+	}
+
+	if err := fs.Create(name2); err != nil {
+		return err
+	}
+	_, symlink, _ := fs.file(name2)
+	_, err = symlink.WriteAt([]byte("sym:"+f.AbsPath()), 0)
+	return err
+}
+
 // Unlink file
 func (fs *MemFS) Unlink(name string) error {
 	name = filepath.Clean(name)
 	p, f, err := fs.file(name)
 	if err != nil {
-		return &os.PathError{Op: "cat", Path: name, Err: err}
+		return &os.PathError{Op: "unlink", Path: name, Err: err}
 	}
 	if f == nil || f.dir {
-		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+		return &os.PathError{Op: "unlink", Path: name, Err: os.ErrNotExist}
+	}
+
+	var symflag = make([]byte, 4)
+	_, err = f.ReadAt(symflag, 0)
+	if err == nil && string(symflag) == "sym:" {
+		return fs.Remove(name)
 	}
 
 	_, parent, err := fs.file(f.linked)
@@ -285,13 +318,14 @@ func (fs *MemFS) Remove(name string) error {
 	name = filepath.Clean(name)
 	parent, f, err := fs.file(name)
 	if err != nil {
-		return &os.PathError{Op: "cat", Path: name, Err: err}
+		return &os.PathError{Op: "remove", Path: name, Err: err}
 	}
 	if f == nil || f.dir {
-		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+		return &os.PathError{Op: "remove", Path: name, Err: os.ErrNotExist}
 	}
 
 	delete(parent.childs, f.name)
+	delete(fs.table, f.id)
 	return nil
 }
 
@@ -300,10 +334,10 @@ func (fs *MemFS) RemoveDir(name string) error {
 	name = filepath.Clean(name)
 	parent, f, err := fs.file(name)
 	if err != nil {
-		return &os.PathError{Op: "cat", Path: name, Err: err}
+		return &os.PathError{Op: "rmdir", Path: name, Err: err}
 	}
 	if f == nil || !f.dir {
-		return &os.PathError{Op: "cat", Path: name, Err: os.ErrNotExist}
+		return &os.PathError{Op: "rmdir", Path: name, Err: os.ErrNotExist}
 	}
 	if len(f.childs) > 0 {
 		return fmt.Errorf("directory is not empty")

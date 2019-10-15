@@ -171,12 +171,16 @@ func (f *File) ReadAt(p []byte, off int) (int, error) {
 // Truncate - change File size
 func (f *File) Truncate(size int) error {
 	blockCount := size / blockSize
-	if size%blockSize != 0 {
+	bytesCount := size % blockSize
+	if bytesCount != 0 {
 		blockCount++
 	}
 
 	if len(f.data) > blockCount {
 		f.data = f.data[:blockCount]
+		if bytesCount != 0 {
+			f.data[blockCount-1].Truncate(bytesCount)
+		}
 		return nil
 	}
 
