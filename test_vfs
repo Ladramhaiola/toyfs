@@ -1,0 +1,51 @@
+{
+	"descriptors": [
+		5,
+		6
+	],
+	"maxdesc": 6,
+	"root": {
+		"protoss": {
+			"childs": {},
+			"data": "",
+			"dir": true,
+			"id": 3,
+			"name": "protoss",
+			"parent": "/",
+			"size": 0
+		},
+		"terran": {
+			"childs": {},
+			"data": "",
+			"dir": true,
+			"id": 1,
+			"name": "terran",
+			"parent": "/",
+			"size": 0
+		},
+		"toss": {
+			"childs": {},
+			"data": "sym:/protoss",
+			"dir": true,
+			"id": 4,
+			"name": "toss",
+			"parent": "/",
+			"size": 12
+		},
+		"zerg": {
+			"childs": {},
+			"data": "",
+			"dir": true,
+			"id": 2,
+			"name": "zerg",
+			"parent": "/",
+			"size": 0
+		}
+	},
+	"table": {
+		"1": "/terran",
+		"2": "/zerg",
+		"3": "/protoss",
+		"4": "/toss"
+	}
+}
