@@ -1,0 +1,141 @@
+{
+	"blocks": {
+		"0xc00008a820": "sym:/terran",
+		"0xc00008a840": "rrrrrrrrrrrrrrrr",
+		"0xc00008a880": "",
+		"0xc00008a8a0": "",
+		"0xc00008a8c0": "",
+		"0xc00008a8e0": "sym:/Zerg/Serral",
+		"0xc00008a900": "oooooooooobbbbbooooo",
+		"0xc00008a920": "",
+		"0xc00008a940": ""
+	},
+	"descriptors": [
+		10
+	],
+	"maxdesc": 10,
+	"root": {
+		"Zerg": {
+			"blockid": "0xc00008a8c0",
+			"childs": {
+				"Elazer": {
+					"blockid": "0xc00008a8e0",
+					"childs": null,
+					"dir": false,
+					"id": 9,
+					"name": "Elazer",
+					"size": 16
+				},
+				"Serral": {
+					"blockid": "0xc00008a840",
+					"childs": null,
+					"dir": false,
+					"id": 8,
+					"name": "Serral",
+					"size": 16
+				}
+			},
+			"dir": true,
+			"id": 7,
+			"name": "Zerg",
+			"size": 0
+		},
+		"dominion": {
+			"blockid": "0xc00008a820",
+			"childs": {
+				"Maru": {
+					"blockid": "0xc00008a8a0",
+					"childs": {
+						"toss_kills": {
+							"blockid": "0xc00008a900",
+							"childs": null,
+							"dir": false,
+							"id": 3,
+							"name": "toss_kills",
+							"size": 20
+						}
+					},
+					"dir": true,
+					"id": 2,
+					"name": "Maru",
+					"size": 0
+				},
+				"TyTy": {
+					"blockid": "0xc00008a920",
+					"childs": {
+						"toss_kills": {
+							"blockid": "0xc00008a900",
+							"childs": null,
+							"dir": false,
+							"id": 5,
+							"name": "toss_kills",
+							"size": 20
+						}
+					},
+					"dir": true,
+					"id": 4,
+					"name": "TyTy",
+					"size": 0
+				}
+			},
+			"dir": true,
+			"id": 6,
+			"name": "dominion",
+			"size": 11
+		},
+		"terran": {
+			"blockid": "0xc00008a880",
+			"childs": {
+				"Maru": {
+					"blockid": "0xc00008a8a0",
+					"childs": {
+						"toss_kills": {
+							"blockid": "0xc00008a900",
+							"childs": null,
+							"dir": false,
+							"id": 3,
+							"name": "toss_kills",
+							"size": 20
+						}
+					},
+					"dir": true,
+					"id": 2,
+					"name": "Maru",
+					"size": 0
+				},
+				"TyTy": {
+					"blockid": "0xc00008a920",
+					"childs": {
+						"toss_kills": {
+							"blockid": "0xc00008a900",
+							"childs": null,
+							"dir": false,
+							"id": 5,
+							"name": "toss_kills",
+							"size": 20
+						}
+					},
+					"dir": true,
+					"id": 4,
+					"name": "TyTy",
+					"size": 0
+				}
+			},
+			"dir": true,
+			"id": 1,
+			"name": "terran",
+			"size": 0
+		}
+	},
+	"table": {
+		"1": "/terran",
+		"2": "/terran/Maru",
+		"3": "/terran/Maru/toss_kills",
+		"4": "/terran/TyTy",
+		"5": "/terran/TyTy/toss_kills",
+		"6": "/dominion",
+		"7": "/Zerg",
+		"8": "/Zerg/Serral",
+		"9": "/Zerg/Elazer"
+	}
+}

@@ -19,13 +19,21 @@ func main() {
 	b.commands = make(map[string]*command)
 
 	b.Handle("mount", 1, func(c Context) error {
-		b.mnt = Create(6)
+		b.fsname = c.args[0]
+
+		fs, err := loadfs(c.args[0])
+		if err != nil {
+			b.mnt = Create(10)
+		} else {
+			b.mnt = fs
+		}
+
 		color.Green("filesystem mounted")
 		return nil
 	})
 
 	b.Handle("unmount", 0, func(c Context) error {
-		savefs("test_vfs", b.mnt)
+		savefs(b.fsname, b.mnt)
 		b.mnt = nil
 		return nil
 	})

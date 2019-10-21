@@ -1,51 +1,50 @@
 {
+	"blocks": {
+		"0xc00000c340": "",
+		"0xc00000c920": "",
+		"0xc00000c940": "",
+		"0xc00000c980": ""
+	},
 	"descriptors": [
+		4,
 		5,
-		6
+		6,
+		7,
+		8,
+		9,
+		10
 	],
-	"maxdesc": 6,
+	"maxdesc": 10,
 	"root": {
 		"protoss": {
+			"blockid": "0xc00000c980",
 			"childs": {},
-			"data": "",
 			"dir": true,
 			"id": 3,
 			"name": "protoss",
-			"parent": "/",
 			"size": 0
 		},
 		"terran": {
-			"childs": {},
-			"data": "",
+			"blockid": "0xc00000c920",
+			"childs": {
+				"maru": {
+					"blockid": "0xc00000c940",
+					"childs": null,
+					"dir": false,
+					"id": 2,
+					"name": "maru",
+					"size": 0
+				}
+			},
 			"dir": true,
 			"id": 1,
 			"name": "terran",
-			"parent": "/",
-			"size": 0
-		},
-		"toss": {
-			"childs": {},
-			"data": "sym:/protoss",
-			"dir": true,
-			"id": 4,
-			"name": "toss",
-			"parent": "/",
-			"size": 12
-		},
-		"zerg": {
-			"childs": {},
-			"data": "",
-			"dir": true,
-			"id": 2,
-			"name": "zerg",
-			"parent": "/",
 			"size": 0
 		}
 	},
 	"table": {
 		"1": "/terran",
-		"2": "/zerg",
-		"3": "/protoss",
-		"4": "/toss"
+		"2": "/terran/maru",
+		"3": "/protoss"
 	}
 }

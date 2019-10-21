@@ -20,8 +20,10 @@ type Filesystem struct {
 // Create new filesystem
 func Create(dcount int) *Filesystem {
 	root := &file{
+		id:     0,
 		dir:    true,
 		name:   "/",
+		buf:    new(buffer),
 		childs: make(map[string]*file),
 	}
 
