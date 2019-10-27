@@ -118,10 +118,6 @@ func (fs *Filesystem) UnmarshalJSON(data []byte) error {
 		f.parent = fs.root
 	}
 
-	for name, f := range fs.wd.childs["terran"].childs {
-		fmt.Println(name, f)
-	}
-
 	return nil
 }
 

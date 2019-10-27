@@ -10,7 +10,8 @@ import (
 	"github.com/fatih/color"
 )
 
-type handler func(c Context) error
+// Handler of cli command
+type Handler func(c Context) error
 
 // Context - babbler context
 type Context struct {
@@ -21,7 +22,7 @@ type Context struct {
 type command struct {
 	name    string
 	argc    int
-	handler handler
+	handler Handler
 }
 
 func (cmd *command) Run(c Context) {
@@ -43,7 +44,7 @@ type Babbler struct {
 }
 
 // Handle - register command handler
-func (b *Babbler) Handle(name string, argc int, handler handler) {
+func (b *Babbler) Handle(name string, argc int, handler Handler) {
 	b.commands[name] = &command{
 		name:    name,
 		argc:    argc,
